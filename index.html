@@ -545,35 +545,56 @@
 </div>
 
 <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://lpiuorocqecrnyzjbcin.supabase.co'; // Replace with your Supabase URL
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwaXVvcm9jcWVjcm55empiY2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwMzg3NjcsImV4cCI6MjA3MTYxNDc2N30.15KKxUcfdTjaf-lhMih_oKM_LAAe6Ol--7xeTrf6xnc'; // Replace with your Supabase anon key
-    
-    // Function to subscribe email to Supabase
-    async function subscribeEmail(email, source) {
+    const TRANSLIX_API_URL = 'https://api.translix.co/v1.0/assistant/chat';
+    const TRANSLIX_TRANSLATION_ID = 'translation_01J7JH7Q5T4KJQ2W7MABCDXYZ'; // Provided translation ID
+    const TRANSLIX_API_TOKEN = 'sk-translix-public-demo-token'; // Provided bearer token
+
+    async function sendAssistantPrompt(content) {
         try {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+            const response = await fetch(TRANSLIX_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Prefer': 'return=minimal'
+                    'Authorization': `Bearer ${TRANSLIX_API_TOKEN}`
                 },
                 body: JSON.stringify({
-                    email: email,
-                    source: source
+                    translation_id: TRANSLIX_TRANSLATION_ID,
+                    messages: [
+                        {
+                            role: 'user',
+                            content
+                        }
+                    ]
                 })
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Subscription failed');
+                let errorMessage = `Request failed with status ${response.status}`;
+
+                try {
+                    const errorBody = await response.json();
+                    if (errorBody?.error?.message) {
+                        errorMessage = errorBody.error.message;
+                    } else if (errorBody?.message) {
+                        errorMessage = errorBody.message;
+                    }
+                } catch (jsonError) {
+                    // Ignore JSON parse errors and use the default message
+                }
+
+                throw new Error(errorMessage);
             }
 
-            return { success: true };
+            let responseBody = null;
+            try {
+                responseBody = await response.json();
+            } catch (parseError) {
+                // Ignore JSON parse errors if the response does not contain a body
+            }
+
+            return { success: true, data: responseBody };
         } catch (error) {
-            console.error('Subscription error:', error);
+            console.error('Assistant request error:', error);
             return { success: false, error: error.message };
         }
     }
@@ -643,30 +664,29 @@
             footerSubscribeForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const email = footerEmailInput.value.trim();
+                const prompt = footerEmailInput.value.trim();
                 const submitButton = footerSubscribeForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
-                
+
                 // Disable button and show loading state
                 submitButton.disabled = true;
-                submitButton.textContent = 'Subscribing...';
+                submitButton.textContent = 'Sending...';
                 footerSubscribeMessage.style.display = 'none';
-                
-                // Subscribe to Supabase
-                const result = await subscribeEmail(email, 'translix.co');
-                
+
+                const result = await sendAssistantPrompt(prompt);
+
                 // Show result message
                 footerSubscribeMessage.style.display = 'block';
-                
+
                 if (result.success) {
-                    footerSubscribeMessage.textContent = '✓ Successfully subscribed! Check your inbox.';
+                    footerSubscribeMessage.textContent = '✓ Request received! We will reach out shortly.';
                     footerSubscribeMessage.style.color = '#00ff88';
                     footerEmailInput.value = '';
                 } else {
-                    footerSubscribeMessage.textContent = '✗ Subscription failed. Please try again.';
+                    footerSubscribeMessage.textContent = `✗ Request failed. ${result.error || 'Please try again.'}`;
                     footerSubscribeMessage.style.color = '#ff6b6b';
                 }
-                
+
                 // Re-enable button
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
@@ -687,30 +707,29 @@
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const email = loginEmailInput.value.trim();
+                const prompt = loginEmailInput.value.trim();
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
-                
+
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 loginMessage.style.display = 'none';
-                
-                // Subscribe to Supabase
-                const result = await subscribeEmail(email, 'translix.co');
-                
+
+                const result = await sendAssistantPrompt(prompt);
+
                 // Show result message
                 loginMessage.style.display = 'block';
-                
+
                 if (result.success) {
-                    loginMessage.textContent = '✓ Login code sent! Check your email inbox.';
+                    loginMessage.textContent = '✓ Request received! We will reach out shortly.';
                     loginMessage.style.color = '#00ff88';
                     loginEmailInput.value = '';
                 } else {
-                    loginMessage.textContent = '✗ Failed to send login code. Please try again.';
+                    loginMessage.textContent = `✗ Request failed. ${result.error || 'Please try again.'}`;
                     loginMessage.style.color = '#ff6b6b';
                 }
-                
+
                 // Re-enable button
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
