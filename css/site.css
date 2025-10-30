@@ -401,7 +401,6 @@ html, body {
 
 .u-surface-card-lg-grid {
   background-color: var(--neutral-surface);
-  border: 1px solid var(--neutral-border);
   border-radius: var(--corner-radius-lg);
   padding: 32px;
   display: grid;
