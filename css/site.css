@@ -419,7 +419,6 @@ html, body {
   background-color: var(--neutral-surface);
   border-radius: var(--corner-radius-md);
   padding: 28px;
-  border: 1px solid var(--neutral-border);
 }
 
 .u-text-brand-primary {
