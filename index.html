@@ -485,10 +485,11 @@
             <p class="large-body text-on-primary mt-l max-w-3xl reveal-on-scroll u-opacity-70">Log in to start translating your apps with Translix. Enter your email in international format, and we’ll send you a quick confirmation link to get started.</p>
             <div class="mt-10 max-w-md w-full reveal-on-scroll">
                  <div class="u-card-transparent">
-                    <form class="u-flex-col-gap-16-full">
-                        <input type="email" placeholder="Your email address" class="body-text u-input-center-pill">
+                    <form id="loginForm" class="u-flex-col-gap-16-full">
+                        <input id="loginEmailInput" type="email" placeholder="Your email address" class="body-text u-input-center-pill">
                         <button type="submit" class="btn btn-secondary button-text u-wfull-pad18">Send Login Code</button>
                     </form>
+                    <p id="loginMessage" class="u-mt8-text14-hidden" style="display: none;"></p>
                     <!-- <p id="footerSubscribeMessage" class="u-mt8-text14-hidden"></p> -->
                 </div>
             </div>
