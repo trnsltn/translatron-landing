@@ -160,6 +160,7 @@ html, body {
   border: none;
   outline: none;
   padding: 12px 18px;
+  border-radius: 50%;
 }
 
 .u-flex-pill {
