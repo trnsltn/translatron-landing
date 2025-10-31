@@ -488,7 +488,6 @@ html, body {
 .u-white-card-lg {
   background-color: white;
   border-radius: var(--corner-radius-lg);
-  border: 1px solid var(--neutral-border);
   padding: 32px;
 }
 
