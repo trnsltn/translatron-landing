@@ -121,30 +121,55 @@
 
   <!-- Fonts & Global Styles -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/site.css">
 </head>
-<body class="bg-white text-gray-900">
-  <header class="header">
-    <div class="header-container">
-      <a href="index.html" class="logo">
-        <img src="logo_transparent.png" alt="Translix Logo">
-      </a>
-      <nav class="main-nav">
+<body>
+  <nav class="social-sidebar" aria-label="Social media">
+    <a href="https://www.linkedin.com/company/Translixai" aria-label="Translix on LinkedIn">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+        <path d="M20.451 20.451h-3.554v-5.569c0-1.328-.026-3.037-1.852-3.037-1.853 0-2.136 1.446-2.136 2.94v5.666H9.356V9h3.413v1.561h.049c.477-.9 1.637-1.848 3.37-1.848 3.601 0 4.268 2.37 4.268 5.455v6.283ZM5.337 7.433a2.065 2.065 0 1 1 0-4.13 2.065 2.065 0 0 1 0 4.13ZM3.861 20.451h2.953V9H3.861v11.451ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.543C0 23.226.792 24 1.771 24h20.451C23.2 24 24 23.226 24 22.272V1.729C24 .774 23.2 0 22.222 0h.003Z" />
+      </svg>
+    </a>
+    <a href="https://twitter.com/Translixai" aria-label="Translix on X (Twitter)">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+        <path d="M2.99 3h3.415l5.6 7.216L17.584 3H21l-6.9 8.2L21 21h-3.416l-5.95-7.662L5.9 21H3l7.423-8.838L3 3z" />
+      </svg>
+    </a>
+    <a href="https://www.facebook.com/Translixai" aria-label="Translix on Facebook">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
+        <path d="M22.675 0H1.325C.594 0 0 .593 0 1.326v21.348C0 23.407.594 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24h-1.918c-1.504 0-1.796.715-1.796 1.764v2.313h3.59l-.467 3.622h-3.123V24h6.126C23.406 24 24 23.407 24 22.674V1.326C24 .593 23.406 0 22.675 0Z" />
+      </svg>
+    </a>
+  </nav>
+  <div class="page-wrapper font-primary">
+    <!-- Header -->
+    <header class="header-sticky">
+      <div class="nav-container">
+        <nav class="nav-bar">
+          <a href="index.html" class="nav-brand nav-link-text">
+            <img src="logo_transparent.png" alt="AI Translatin logo" class="logo" >
+            <span class="u-font-bold">Translix
+            </span>
+          </a>
+          <div class="nav-links">
+            <a href="index.html#style-guide" class="nav-link-text">Style Guide</a>
+            <a href="index.html#how-it-works" class="nav-link-text">How it Works</a>
+            <a href="index.html#faq" class="nav-link-text">FAQ</a>
+          </div>
+          <a href="index.html#login" class="btn btn-primary button-text nav-cta">Start Translating</a>
+          <button class="hamburger-menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+        </nav>
+      </div>
+      <div class="mobile-nav">
         <a href="index.html#style-guide" class="nav-link-text">Style Guide</a>
         <a href="index.html#how-it-works" class="nav-link-text">How it Works</a>
         <a href="index.html#faq" class="nav-link-text">FAQ</a>
         <a href="index.html#login" class="nav-link-text">Start Translating</a>
-        <a href="blog.html" class="btn btn-secondary button-text">Blog</a>
-      </nav>
-    </div>
-    <div class="mobile-nav">
-      <a href="index.html#style-guide" class="nav-link-text">Style Guide</a>
-      <a href="index.html#how-it-works" class="nav-link-text">How it Works</a>
-      <a href="index.html#faq" class="nav-link-text">FAQ</a>
-      <a href="index.html#login" class="nav-link-text">Start Translating</a>
-    </div>
-  </header>
-  <main>
+      </div>
+    </header>
+    <main>
     <section id="article-hero" class="section-padding u-bg-neutral-surface">
       <div class="container mx-auto flex flex-col gap-10">
         <a href="blog.html#latest" class="button-text u-link-inline-brand">
@@ -467,6 +492,7 @@
       </div>
     </div>
   </footer>
+  </div>
 
   <script src="js/newsletter.js"></script>
 </body>
