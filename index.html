@@ -618,12 +618,16 @@
         
         const goToTopBtn = document.getElementById('goToTopBtn');
         if(goToTopBtn) {
+            const bottomThreshold = 50;
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
                     goToTopBtn.classList.add('show');
                 } else {
                     goToTopBtn.classList.remove('show');
                 }
+
+                const isNearBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - bottomThreshold);
+                goToTopBtn.classList.toggle('at-bottom', isNearBottom);
             });
             goToTopBtn.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
