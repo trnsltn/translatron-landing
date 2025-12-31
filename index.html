@@ -563,27 +563,23 @@
 </div>
 
 <script>
-    const TRANSLIX_API_URL = 'https://api.translix.co/v1.0/assistant/chat';
-    const TRANSLIX_TRANSLATION_ID = 'translation_01J7JH7Q5T4KJQ2W7MABCDXYZ'; // Provided translation ID
-    const TRANSLIX_API_TOKEN = 'sk-translix-public-demo-token'; // Provided bearer token
+    const SUBSCRIBER_API_URL = 'https://api.translix.co/v1.0/subscribers';
 
-    async function sendAssistantPrompt(content) {
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    async function submitSubscriberEmail(email, source) {
         try {
-            const response = await fetch(TRANSLIX_API_URL, {
+            const payload = { email };
+            if (source) {
+                payload.source = source;
+            }
+
+            const response = await fetch(SUBSCRIBER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${TRANSLIX_API_TOKEN}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    translation_id: TRANSLIX_TRANSLATION_ID,
-                    messages: [
-                        {
-                            role: 'user',
-                            content
-                        }
-                    ]
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
@@ -603,16 +599,9 @@
                 throw new Error(errorMessage);
             }
 
-            let responseBody = null;
-            try {
-                responseBody = await response.json();
-            } catch (parseError) {
-                // Ignore JSON parse errors if the response does not contain a body
-            }
-
-            return { success: true, data: responseBody };
+            return { success: true };
         } catch (error) {
-            console.error('Assistant request error:', error);
+            console.error('Subscriber request error:', error);
             return { success: false, error: error.message };
         }
     }
@@ -686,16 +675,30 @@
             footerSubscribeForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const prompt = footerEmailInput.value.trim();
+                const email = footerEmailInput.value.trim();
                 const submitButton = footerSubscribeForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
+
+                if (!email) {
+                    footerSubscribeMessage.textContent = '✗ Please enter your email address.';
+                    footerSubscribeMessage.style.color = '#ff6b6b';
+                    footerSubscribeMessage.style.display = 'block';
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    footerSubscribeMessage.textContent = '✗ Enter a valid email address.';
+                    footerSubscribeMessage.style.color = '#ff6b6b';
+                    footerSubscribeMessage.style.display = 'block';
+                    return;
+                }
 
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 footerSubscribeMessage.style.display = 'none';
 
-                const result = await sendAssistantPrompt(prompt);
+                const result = await submitSubscriberEmail(email, 'translix.co');
 
                 // Show result message
                 footerSubscribeMessage.style.display = 'block';
@@ -729,22 +732,37 @@
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const prompt = loginEmailInput.value.trim();
+                const email = loginEmailInput.value.trim();
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
+
+                loginMessage.style.display = 'none';
+
+                if (!email) {
+                    loginMessage.textContent = '✗ Please enter your email address.';
+                    loginMessage.style.color = '#ff6b6b';
+                    loginMessage.style.display = 'block';
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    loginMessage.textContent = '✗ Enter a valid email address.';
+                    loginMessage.style.color = '#ff6b6b';
+                    loginMessage.style.display = 'block';
+                    return;
+                }
 
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
-                loginMessage.style.display = 'none';
 
-                const result = await sendAssistantPrompt(prompt);
+                const result = await submitSubscriberEmail(email, 'translix.co/login');
 
                 // Show result message
                 loginMessage.style.display = 'block';
 
                 if (result.success) {
-                    loginMessage.textContent = '✓ Request received! We will reach out shortly.';
+                    loginMessage.textContent = '✓ Login link sent! Check your inbox.';
                     loginMessage.style.color = '#00ff88';
                     loginEmailInput.value = '';
                 } else {
