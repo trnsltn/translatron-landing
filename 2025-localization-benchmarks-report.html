@@ -433,35 +433,45 @@
     </button>
   </div>
 <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://lpiuorocqecrnyzjbcin.supabase.co'; // Replace with your Supabase URL
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwaXVvcm9jcWVjcm55empiY2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwMzg3NjcsImV4cCI6MjA3MTYxNDc2N30.15KKxUcfdTjaf-lhMih_oKM_LAAe6Ol--7xeTrf6xnc'; // Replace with your Supabase anon key
-    
-    // Function to subscribe email to Supabase
-    async function subscribeEmail(email, source) {
+    const SUBSCRIBER_API_URL = 'https://api.translix.co/v1.0/subscribers';
+
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    async function submitSubscriberEmail(email, source) {
         try {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+            const payload = { email };
+            if (source) {
+                payload.source = source;
+            }
+
+            const response = await fetch(SUBSCRIBER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Prefer': 'return=minimal'
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    email: email,
-                    source: source
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Subscription failed');
+                let errorMessage = `Request failed with status ${response.status}`;
+
+                try {
+                    const errorBody = await response.json();
+                    if (errorBody?.error?.message) {
+                        errorMessage = errorBody.error.message;
+                    } else if (errorBody?.message) {
+                        errorMessage = errorBody.message;
+                    }
+                } catch (jsonError) {
+                    // Ignore JSON parse errors and use the default message
+                }
+
+                throw new Error(errorMessage);
             }
 
             return { success: true };
         } catch (error) {
-            console.error('Subscription error:', error);
+            console.error('Subscriber request error:', error);
             return { success: false, error: error.message };
         }
     }
@@ -539,13 +549,27 @@
                 const submitButton = footerSubscribeForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
                 
+                if (!email) {
+                    footerSubscribeMessage.textContent = '✗ Please enter your email address.';
+                    footerSubscribeMessage.style.color = '#ff6b6b';
+                    footerSubscribeMessage.style.display = 'block';
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    footerSubscribeMessage.textContent = '✗ Enter a valid email address.';
+                    footerSubscribeMessage.style.color = '#ff6b6b';
+                    footerSubscribeMessage.style.display = 'block';
+                    return;
+                }
+
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Subscribing...';
                 footerSubscribeMessage.style.display = 'none';
                 
-                // Subscribe to Supabase
-                const result = await subscribeEmail(email, 'translix.co');
+                // Subscribe via public endpoint
+                const result = await submitSubscriberEmail(email, 'translix.co');
                 
                 // Show result message
                 footerSubscribeMessage.style.display = 'block';
@@ -583,11 +607,25 @@
                 const submitButton = blogNewsletterForm.querySelector('button[type="submit"]');
                 const originalButtonText = submitButton.textContent;
 
+                if (!email) {
+                    blogNewsletterMessage.textContent = '✗ Please enter your email address.';
+                    blogNewsletterMessage.style.color = '#ff6b6b';
+                    blogNewsletterMessage.style.display = 'block';
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    blogNewsletterMessage.textContent = '✗ Enter a valid email address.';
+                    blogNewsletterMessage.style.color = '#ff6b6b';
+                    blogNewsletterMessage.style.display = 'block';
+                    return;
+                }
+
                 submitButton.disabled = true;
                 submitButton.textContent = 'Joining...';
                 blogNewsletterMessage.style.display = 'none';
 
-                const result = await subscribeEmail(email, 'translix.co/blog');
+                const result = await submitSubscriberEmail(email, 'translix.co/blog');
 
                 blogNewsletterMessage.style.display = 'block';
 
