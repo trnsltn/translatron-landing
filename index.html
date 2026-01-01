@@ -497,7 +497,7 @@
                  <div class="u-card-transparent">
                     <form id="loginForm" class="u-flex-col-gap-16-full">
                         <input id="loginEmailInput" type="email" placeholder="Your email address" class="body-text u-input-center-pill">
-                        <button type="submit" class="btn btn-secondary button-text u-wfull-pad18">Send Login Code</button>
+                        <button type="submit" class="btn btn-secondary button-text u-wfull-pad18" data-analytics="send-login-code">Send Login Code</button>
                     </form>
                     <p id="loginMessage" class="u-mt8-text14-hidden" style="display: none;"></p>
                     <!-- <p id="footerSubscribeMessage" class="u-mt8-text14-hidden"></p> -->
@@ -562,6 +562,7 @@
     </button>
 </div>
 
+<script src="js/analytics.js"></script>
 <script>
     const SUBSCRIBER_API_URL = 'https://api.translix.co/v1.0/subscribers';
 
